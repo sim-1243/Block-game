@@ -32,14 +32,14 @@ def richtung(x1,x2):
         return False
     elif x1<x2:
         return True
-def player_out(px,py,width,height):
-    if px>width:
+def player_out(px,py,width,height,player_width,player_height):
+    if px+player_width>=width:
         px-=6
-    elif px<width:
+    elif px<=0:
         px+=6
-    elif py>height:
+    elif py+player_height*1.75>=height:
         py-=6
-    elif py<height:
+    elif py<=0:
         py+=6
     return px,py
 def out_of_screen(px,py,x,y,width,height):

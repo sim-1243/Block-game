@@ -110,8 +110,8 @@ while running and emerg:
     if keys[pygame.K_ESCAPE]:
         emerg=False
         print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
-    player_x,player_y=backbone.player_out(player_x,player_y,screen_width,screen_height)
-    target_x,target_y=backbone.player_out(target_x,target_y,screen_width,screen_height)
+    player_x,player_y=backbone.player_out(player_x,player_y,screen_width,screen_height,player_width,player_height)
+    target_x,target_y=backbone.player_out(target_x,target_y,screen_width,screen_height,target_width,target_height)
     # Gegnerbewegung
     if kugel_ca:
         i+=1
