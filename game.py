@@ -110,7 +110,8 @@ while running and emerg:
     if keys[pygame.K_ESCAPE]:
         emerg=False
         print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
-
+    player_x,player_y=backbone.player_out(player_x,player_y,screen_width,screen_height)
+    target_x,target_y=backbone.player_out(target_x,target_y,screen_width,screen_height)
     # Gegnerbewegung
     if kugel_ca:
         i+=1
@@ -139,6 +140,7 @@ while running and emerg:
     else:
         kugel_x = player_x
         kugel_y = player_y
+    
     # Spieler-Gegner-Kollision
     score,schaden1,kugel_c=backbone.bullet_collision(kugel_c,schaden1,score,target_x,kugel_cx,target_y,kugel_cy,target_width,target_height,kugel_width,kugel_height)
     score,schaden1,kugel_d=backbone.bullet_collision(kugel_d,schaden1,score,target_x,kugel_x,target_y,kugel_y,target_width,target_height,kugel_width,kugel_height)
