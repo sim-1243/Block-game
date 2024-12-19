@@ -33,8 +33,6 @@ def richtung(x1,x2):
     elif x1<x2:
         return True
 def out_of_screen(px,py,x,y,width,height):
-    pkx=px
-    pky=py
     if x>width:
         self=False
     elif x<0:
