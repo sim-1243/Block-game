@@ -1,6 +1,16 @@
 import pygame
 from math import sqrt
-
+def leben_verlust(wert,schaden):
+    if wert !=0 and schaden !=0:
+        wert-=schaden
+        schaden=0
+    elif wert <= 0:
+        return False ,wert ,schaden
+    elif wert!=0 and schaden ==0 and wert<100:
+        wert+=1
+    else:
+        return True, wert ,schaden
+    return True, wert, schaden
 def bullet_movement(self,x,y):
     if self:
         x+=10
@@ -42,8 +52,14 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
-icon = pygame.image.load('icon.png')
-pygame.display.set_icon(icon)
+leben=100
+leben_height=10
+leben_x=15
+leben_y=15
+leben_t=100
+leben_tx=screen_width -120
+schaden=0
+schaden1=0
 i=0
 enemy_ca=False
 score1 =0
@@ -90,7 +106,8 @@ field_color = (255, 255, 255)
 
 # Spielschleife
 running = True
-while running:
+emerg=True
+while running and emerg:
     # Ereignisse verarbeiten
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -131,7 +148,7 @@ while running:
         j=0
         enemy_ca=False
     if keys[pygame.K_ESCAPE]:
-        running=False
+        emerg=False
         print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
 
     # Gegnerbewegung
@@ -165,6 +182,7 @@ while running:
     # Spieler-Gegner-Kollision
     if player_x < enemy_x + enemy_width and player_x + player_width > enemy_x and player_y < enemy_y + enemy_height and player_y + player_height> enemy_y:
         score1 += 100
+        schaden = 50
         enemy_c =False
         enemy_x =target_x
     #if pygame.Rect.colliderect(target_y, target_y-target_height, target_x, target_x-target_width):
@@ -172,18 +190,28 @@ while running:
         #del(kugel)
     if player_x < enemy_cx + enemy_width and player_x + player_width > enemy_cx and player_y < enemy_cy + enemy_height and player_y + player_height> enemy_cy:
         score1 += 100
+        schaden = 50
         enemy_c =False
         enemy_x =target_x
     if kugel_cx < target_x + target_width and kugel_width+kugel_cx > target_x and kugel_cy < target_y + target_height and kugel_cy + kugel_width >target_y:
         score +=100
+        schaden1=25
         kugel_c = False
         kugel_cx = player_x
     elif kugel_x < target_x + target_width and kugel_width+kugel_x > target_x and kugel_y < target_y + target_height and kugel_y + kugel_width >target_y:
         score +=100
+        schaden1=25
         kugel_d = False
         kugel_x = player_x
     # Spielfeld zeichnen
+    running,leben,schaden=leben_verlust(leben,schaden)
+    running,leben_t,schaden1=leben_verlust(leben_t,schaden1)
+    if leben <=0 or leben_t <=0:
+        running=False
+    
     screen.fill(field_color)
+    pygame.draw.rect(screen, player_color,(leben_x, leben_y, leben, leben_height))
+    pygame.draw.rect(screen, player_color,(leben_tx,leben_y,leben_t,leben_height))
     pygame.draw.rect(screen, kugel_color, (kugel_cx,kugel_cy,kugel_width,kugel_height))
     pygame.draw.rect(screen, player_color, (player_x, player_y, player_width, player_height))
     pygame.draw.rect(screen, kugel_color,(kugel_x,kugel_y,kugel_width,kugel_height))
