@@ -1,57 +1,6 @@
 import pygame
 from math import sqrt
-def leben_verlust(wert,schaden):
-    if wert !=0 and schaden !=0:
-        wert-=schaden
-        schaden=0
-    elif wert <= 0:
-        return False ,wert ,schaden
-    elif wert!=0 and schaden ==0 and wert<100:
-        wert+=1
-    else:
-        return True, wert ,schaden
-    return True, wert, schaden
-def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
-    if px < bx + bwith and px + pwidth > bx and py< by + bheight and py + pheight> by:
-        return True
-    else:
-        return False
-def bullet_collision(self,schaden,score,px,bx,py,by,pwidth,pheight,bwith,bheight):
-    if collision(px,bx,py,by,pwidth,pheight,bwith,bheight):
-        score+=100
-        schaden=25
-        self=False
-    return score ,schaden,self
-def bullet_movement(self,x,y):
-    if self:
-        x+=10
-        return x
-    elif not self:
-        x-=10
-        return x
-def richtung(x1,x2):
-    if x1>x2:
-        return False
-    elif x1<x2:
-        return True
-def out_of_screen(px,py,x,y,width,height):
-    pkx=px
-    pky=py
-    if x>width:
-        self=False
-    elif x<0:
-        self= False
-    elif y>height:
-        self=False
-    elif y<0:
-        self= False
-    else:
-        self= True 
-    if not self:
-        return px, py, False
-    else:
-        return x,y,True
-
+import backbone
 
 # Initialisierung von Pygame
 pygame.init()
@@ -123,8 +72,8 @@ while running and emerg:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    player= richtung(player_x,target_x)
-    target=richtung(target_x,player_x)
+    player=backbone.richtung(player_x,target_x)
+    target=backbone.richtung(target_x,player_x)
     
     # Spielerbewegung
     keys = pygame.key.get_pressed()
@@ -166,38 +115,38 @@ while running and emerg:
     if kugel_ca:
         i+=1
     if enemy_d:
-        enemy_x=bullet_movement(target,enemy_x,enemy_y)
-        enemy_x,enemy_y,enemy_d=out_of_screen(target_x,target_y,enemy_x,enemy_y,screen_width,screen_height)
+        enemy_x=backbone.bullet_movement(target,enemy_x,enemy_y)
+        enemy_x,enemy_y,enemy_d=backbone.out_of_screen(target_x,target_y,enemy_x,enemy_y,screen_width,screen_height)
 
     else:
         enemy_x = target_x
         enemy_y = target_y
     if kugel_c:
-        kugel_cx,kugel_cy,kugel_c=out_of_screen(player_x,player_y,kugel_cx,kugel_cy,screen_width,screen_height)
-        kugel_cx=bullet_movement(player,kugel_cx,kugel_cy)
+        kugel_cx,kugel_cy,kugel_c=backbone.out_of_screen(player_x,player_y,kugel_cx,kugel_cy,screen_width,screen_height)
+        kugel_cx=backbone.bullet_movement(player,kugel_cx,kugel_cy)
     else:
         kugel_cx = player_x
         kugel_cy = player_y
     if enemy_c:
-        enemy_cx=bullet_movement(target,enemy_cx,enemy_cy)
-        enemy_cx,enemy_cy,enemy_c=out_of_screen(target_x,target_y,enemy_cx,enemy_cy,screen_width,screen_height)
+        enemy_cx=backbone.bullet_movement(target,enemy_cx,enemy_cy)
+        enemy_cx,enemy_cy,enemy_c=backbone.out_of_screen(target_x,target_y,enemy_cx,enemy_cy,screen_width,screen_height)
     else:
         enemy_cx = target_x
         enemy_cy =target_y
     if kugel_d:
-        kugel_x=bullet_movement(player,kugel_x,kugel_y)
-        kugel_x,kugel_y,kugel_d=out_of_screen(player_x,player_y,kugel_x,kugel_y,screen_width,screen_height)
+        kugel_x=backbone.bullet_movement(player,kugel_x,kugel_y)
+        kugel_x,kugel_y,kugel_d=backbone.out_of_screen(player_x,player_y,kugel_x,kugel_y,screen_width,screen_height)
     else:
         kugel_x = player_x
         kugel_y = player_y
     # Spieler-Gegner-Kollision
-    score,schaden1,kugel_c=bullet_collision(kugel_c,schaden1,score,target_x,kugel_cx,target_y,kugel_cy,target_width,target_height,kugel_width,kugel_height)
-    score,schaden1,kugel_d=bullet_collision(kugel_d,schaden1,score,target_x,kugel_x,target_y,kugel_y,target_width,target_height,kugel_width,kugel_height)
-    score1,schaden,enemy_d=bullet_collision(enemy_d,schaden,score1,player_x,enemy_x,player_y,enemy_y,player_width,player_height,enemy_width,enemy_height)
-    score1,schaden,enemy_c=bullet_collision(enemy_c,schaden,score1,player_x,enemy_cx,player_y,enemy_cy,player_width,player_height,enemy_width,enemy_height)
+    score,schaden1,kugel_c=backbone.bullet_collision(kugel_c,schaden1,score,target_x,kugel_cx,target_y,kugel_cy,target_width,target_height,kugel_width,kugel_height)
+    score,schaden1,kugel_d=backbone.bullet_collision(kugel_d,schaden1,score,target_x,kugel_x,target_y,kugel_y,target_width,target_height,kugel_width,kugel_height)
+    score1,schaden,enemy_d=backbone.bullet_collision(enemy_d,schaden,score1,player_x,enemy_x,player_y,enemy_y,player_width,player_height,enemy_width,enemy_height)
+    score1,schaden,enemy_c=backbone.bullet_collision(enemy_c,schaden,score1,player_x,enemy_cx,player_y,enemy_cy,player_width,player_height,enemy_width,enemy_height)
     # Spielfeld zeichnen
-    running,leben,schaden=leben_verlust(leben,schaden)
-    running,leben_t,schaden1=leben_verlust(leben_t,schaden1)
+    running,leben,schaden=backbone.leben_verlust(leben,schaden)
+    running,leben_t,schaden1=backbone.leben_verlust(leben_t,schaden1)
     if leben <=0 or leben_t <=0:
         print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
         running=False
