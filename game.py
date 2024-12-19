@@ -11,6 +11,17 @@ def leben_verlust(wert,schaden):
     else:
         return True, wert ,schaden
     return True, wert, schaden
+def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
+    if px < bx + bwith and px + pwidth > bx and py< by + bheight and py + pheight> by:
+        return True
+    else:
+        return False
+def bullet_collision(self,schaden,score,px,bx,py,by,pwidth,pheight,bwith,bheight):
+    if collision(px,bx,py,by,pwidth,pheight,bwith,bheight):
+        score+=100
+        schaden=25
+        self=False
+    return score ,schaden,self
 def bullet_movement(self,x,y):
     if self:
         x+=10
@@ -180,33 +191,15 @@ while running and emerg:
         kugel_x = player_x
         kugel_y = player_y
     # Spieler-Gegner-Kollision
-    if player_x < enemy_x + enemy_width and player_x + player_width > enemy_x and player_y < enemy_y + enemy_height and player_y + player_height> enemy_y:
-        score1 += 100
-        schaden = 50
-        enemy_c =False
-        enemy_x =target_x
-    #if pygame.Rect.colliderect(target_y, target_y-target_height, target_x, target_x-target_width):
-        #score += 100
-        #del(kugel)
-    if player_x < enemy_cx + enemy_width and player_x + player_width > enemy_cx and player_y < enemy_cy + enemy_height and player_y + player_height> enemy_cy:
-        score1 += 100
-        schaden = 50
-        enemy_c =False
-        enemy_x =target_x
-    if kugel_cx < target_x + target_width and kugel_width+kugel_cx > target_x and kugel_cy < target_y + target_height and kugel_cy + kugel_width >target_y:
-        score +=100
-        schaden1=25
-        kugel_c = False
-        kugel_cx = player_x
-    elif kugel_x < target_x + target_width and kugel_width+kugel_x > target_x and kugel_y < target_y + target_height and kugel_y + kugel_width >target_y:
-        score +=100
-        schaden1=25
-        kugel_d = False
-        kugel_x = player_x
+    score,schaden1,kugel_c=bullet_collision(kugel_c,schaden1,score,target_x,kugel_cx,target_y,kugel_cy,target_width,target_height,kugel_width,kugel_height)
+    score,schaden1,kugel_d=bullet_collision(kugel_d,schaden1,score,target_x,kugel_x,target_y,kugel_y,target_width,target_height,kugel_width,kugel_height)
+    score1,schaden,enemy_d=bullet_collision(enemy_d,schaden,score1,player_x,enemy_x,player_y,enemy_y,player_width,player_height,enemy_width,enemy_height)
+    score1,schaden,enemy_c=bullet_collision(enemy_c,schaden,score1,player_x,enemy_cx,player_y,enemy_cy,player_width,player_height,enemy_width,enemy_height)
     # Spielfeld zeichnen
     running,leben,schaden=leben_verlust(leben,schaden)
     running,leben_t,schaden1=leben_verlust(leben_t,schaden1)
     if leben <=0 or leben_t <=0:
+        print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
         running=False
     
     screen.fill(field_color)
