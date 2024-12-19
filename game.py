@@ -8,12 +8,10 @@ def bullet_movement(self,x,y):
     elif not self:
         x-=10
         return x
-def over_half(self,x,size):
-    if self and x>size//2:
-        
+def richtung(x1,x2):
+    if x1>x2:
         return False
-    elif not self and x<size//2:
-        
+    elif x1<x2:
         return True
 def out_of_screen(px,py,x,y,width,height):
     pkx=px
@@ -97,9 +95,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    player= richtung(player_x,target_x)
+    target=richtung(target_x,player_x)
     
-    #target=over_half(target,target_x,screen_width)
-    #player=over_half(player,player_x,screen_width)
     # Spielerbewegung
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
