@@ -15,6 +15,24 @@ def over_half(self,x,size):
     elif not self and x<size//2:
         
         return True
+def out_of_screen(px,py,x,y,width,height):
+    pkx=px
+    pky=py
+    if x>width:
+        self=False
+    elif x<0:
+        self= False
+    elif y>height:
+        self=False
+    elif y<0:
+        self= False
+    else:
+        self= True 
+    if not self:
+        return px, py, False
+    else:
+        return x,y,True
+
 
 # Initialisierung von Pygame
 pygame.init()
@@ -80,8 +98,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     
-    target=over_half(target,target_x,screen_width)
-    player=over_half(player,player_x,screen_width)
+    #target=over_half(target,target_x,screen_width)
+    #player=over_half(player,player_x,screen_width)
     # Spielerbewegung
     keys = pygame.key.get_pressed()
     if keys[pygame.K_a]:
@@ -121,20 +139,28 @@ while running:
     # Gegnerbewegung
     if kugel_ca:
         i+=1
-    if enemy_c:
+    if enemy_d:
         enemy_x=bullet_movement(target,enemy_x,enemy_y)
+        enemy_x,enemy_y,enemy_d=out_of_screen(target_x,target_y,enemy_x,enemy_y,screen_width,screen_height)
+
     else:
         enemy_x = target_x
         enemy_y = target_y
     if kugel_c:
+        kugel_cx,kugel_cy,kugel_c=out_of_screen(player_x,player_y,kugel_cx,kugel_cy,screen_width,screen_height)
         kugel_cx=bullet_movement(player,kugel_cx,kugel_cy)
     else:
         kugel_cx = player_x
         kugel_cy = player_y
     if enemy_c:
         enemy_cx=bullet_movement(target,enemy_cx,enemy_cy)
+        enemy_cx,enemy_cy,enemy_c=out_of_screen(target_x,target_y,enemy_cx,enemy_cy,screen_width,screen_height)
+    else:
+        enemy_cx = target_x
+        enemy_cy =target_y
     if kugel_d:
         kugel_x=bullet_movement(player,kugel_x,kugel_y)
+        kugel_x,kugel_y,kugel_d=out_of_screen(player_x,player_y,kugel_x,kugel_y,screen_width,screen_height)
     else:
         kugel_x = player_x
         kugel_y = player_y
@@ -146,22 +172,10 @@ while running:
     #if pygame.Rect.colliderect(target_y, target_y-target_height, target_x, target_x-target_width):
         #score += 100
         #del(kugel)
-    if player_x < enemy_x + enemy_width and player_x + player_width > enemy_x and player_y < enemy_y + enemy_height and player_y + player_height> enemy_y:
+    if player_x < enemy_cx + enemy_width and player_x + player_width > enemy_cx and player_y < enemy_cy + enemy_height and player_y + player_height> enemy_cy:
         score1 += 100
         enemy_c =False
         enemy_x =target_x
-    if kugel_cx > screen_width:
-        kugel_c= False
-        kugel_cx = player_x
-        kugel_cy = player_y
-    elif kugel_x > screen_width:
-        kugel_d= False
-        kugel_x = player_x
-        kugel_y =player_y
-    elif enemy_x < 0:
-        enemy_c=False
-        enemy_x =target_x
-        enemy_y = target_y
     if kugel_cx < target_x + target_width and kugel_width+kugel_cx > target_x and kugel_cy < target_y + target_height and kugel_cy + kugel_width >target_y:
         score +=100
         kugel_c = False
