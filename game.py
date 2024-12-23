@@ -1,6 +1,7 @@
 import pygame
 from math import sqrt
 import backbone
+import bullet
 
 # Initialisierung von Pygame
 pygame.init()
@@ -12,6 +13,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
+k=0
+kugeln=[]
 leben=100
 leben_height=10
 leben_x=15
@@ -95,6 +98,9 @@ while running and emerg:
         target_x +=5
     if keys[pygame.K_e] and not kugel_c:
         kugel_c=True
+        kugel=bullet.Bullet(player_x,player_y,kugel_color,player)
+        kugeln.append(k)
+        k+=1
         kugel_ca=True
     elif keys[pygame.K_e] and kugel_ca and i > 30:
         kugel_d = True
@@ -158,7 +164,8 @@ while running and emerg:
     pygame.draw.rect(screen, player_color,(leben_tx,leben_y,leben_t,leben_height))
     pygame.draw.rect(screen, kugel_color, (kugel_cx,kugel_cy,kugel_width,kugel_height))
     pygame.draw.rect(screen, player_color, (player_x, player_y, player_width, player_height))
-    pygame.draw.rect(screen, kugel_color,(kugel_x,kugel_y,kugel_width,kugel_height))
+    if kugel_c:
+        pygame.draw.rect(screen, kugel_color,(kugel.x,kugel.y,kugel.width,kugel.height))
     pygame.draw.rect(screen, enemy_color, (enemy_x, enemy_y, enemy_width, enemy_height))
     pygame.draw.rect(screen, target_color,(target_x,target_y,target_width,target_height))
     pygame.draw.rect(screen, enemy_color, (enemy_cx, enemy_cy, enemy_width, enemy_height))
