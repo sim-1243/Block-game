@@ -14,6 +14,15 @@ def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
         return True
     else:
         return False
+def booster_collision(schaden,px,py,pwidth,pheight,lbooster,lbool):
+    for i in range (len(lbooster)):
+        if lbool[i] and collision(px,lbooster[i].x,py,lbooster[i].y,pwidth,pheight,lbooster[i].width,lbooster[i].height):
+            schaden=schaden//2
+            lbooster[i].get_used
+            if lbooster[i].duration<=0:
+                lbool[i]=False
+        i+=1
+        return schaden,lbool,lbooster
 def bullet_collision(schaden,score,px,py,pwidth,pheight,lbullet,lbool):
     for i in range(len(lbullet)):
         if lbool[i] and collision(px,lbullet[i].x,py,lbullet[i].y,pwidth,pheight,lbullet[i].width,lbullet[i].height):
