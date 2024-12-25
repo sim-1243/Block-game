@@ -14,19 +14,32 @@ def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
         return True
     else:
         return False
-def bullet_collision(self,schaden,score,px,bx,py,by,pwidth,pheight,bwith,bheight):
-    if collision(px,bx,py,by,pwidth,pheight,bwith,bheight):
-        score+=100
-        schaden=25
-        self=False
-    return score ,schaden,self
-def bullet_movement(self,x,y):
+def bullet_collision(schaden,score,px,py,pwidth,pheight,lbullet,lbool):
+    for i in range(len(lbullet)):
+        if lbool[i] and collision(px,lbullet[i].x,py,lbullet[i].y,pwidth,pheight,lbullet[i].width,lbullet[i].height):
+            score+=100
+            schaden=25
+            lbool[i]=False
+        i+=1
+    return score ,schaden,lbool,lbullet
+def bullet_movement(self,lbool,lcoord,px,py):
     if self:
-        x+=10
-        return x
+        for i in range (len(lbool)):
+            if lbool[i]:
+                lcoord[i].x+=10
+            else:
+                lcoord[i].x=px
+                lcoord[i].y=py
+            i+=1
     elif not self:
-        x-=10
-        return x
+        for i in range (len(lbool)):
+            if lbool[i]:
+                lcoord[i].x-=10
+            else:
+                lcoord[i].x=px
+                lcoord[i].y=py
+            i+=1
+    return lcoord
 def richtung(x1,x2):
     if x1>x2:
         return False
@@ -42,18 +55,26 @@ def player_out(px,py,width,height,player_width,player_height):
     elif py<=0:
         py+=5
     return px,py
-def out_of_screen(px,py,x,y,width,height):
-    if x>width:
-        self=False
-    elif x<0:
-        self= False
-    elif y>height:
-        self=False
-    elif y<0:
-        self= False
-    else:
-        self= True 
-    if not self:
-        return px, py, False
-    else:
-        return x,y,True
+def out_of_screen(px,py,lcoord,lbool,width,height):
+    for i in range(len(lcoord)):
+        if lcoord[i].x>width:
+            lbool[i]=False
+            lcoord[i].x=px
+        elif lcoord[i].x<0:
+            lbool[i]=False
+            lcoord[i].x=px
+        elif lcoord[i].y>height:
+            lbool[i]=False
+            lcoord[i].y=py
+        elif lcoord[i].y<0:
+            lbool[i]=False
+            lcoord[i].y=py
+        i+=1
+    return lcoord, lbool
+def bullet_frei(kugel):
+    for i in range (len(kugel)):
+        if not kugel[i]:
+            kugel[i]=True
+            return kugel, 30
+        i+=1
+    return kugel,0
