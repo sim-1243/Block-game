@@ -4,14 +4,14 @@ import backbone
 import bullet
 import booster
 import random
+import sys
 # Initialisierung von Pygame
 pygame.init()
 
 # Spielfenster einrichten
-screen_width = 1920
-screen_height = 1080
+screen_width = 1366
+screen_height = 786
 screen = pygame.display.set_mode((screen_width, screen_height))
-
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
 a=3
@@ -68,7 +68,6 @@ kugel=[kugel0,kugel1,kugel2]
 field_width = 800
 field_height = 600
 field_color = (255, 255, 255)
-
 # Spielschleife
 running = True
 emerg=True
@@ -111,7 +110,13 @@ while running and emerg:
                 boosters[l]=True
                 boost[l].x=random.randint(2,screen_width-2)
                 boost[l].y=random.randint(2,screen_height-2)
+                break
             l+=1
+    for l in range (len(boost)):
+        if not boosters[l]:
+            boost[l].x=800
+            boost[l].y=-35
+        l+=1
     player_x,player_y=backbone.player_out(player_x,player_y,screen_width,screen_height,player_width,player_height)
     target_x,target_y=backbone.player_out(target_x,target_y,screen_width,screen_height,target_width,target_height)
     # Gegnerbewegung
@@ -140,6 +145,8 @@ while running and emerg:
     for z in range (len(boost)):
         if boosters[z]:
             pygame.draw.rect(screen,boost[z].color,(boost[z].x,boost[z].y,boost[z].width,boost[z].height))
+            pygame.draw.rect(screen,color.lila,(boost[z].x+boost[z].width//2-1,boost[z].y+2,boost[z].width//4,boost[z].height-4))
+            pygame.draw.rect(screen,color.lila,(boost[z].x+2,boost[z].y+boost[z].height//2-1,boost[z].width-4,boost[z].height//4))
         z+=1
     for z in range (len(kugel)):
         if kugeln[z]:
