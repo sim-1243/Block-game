@@ -1,4 +1,4 @@
-from python import pygame
+from python import pygame # type: ignore
 #import pygame
 import color
 import backbone
