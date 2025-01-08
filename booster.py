@@ -1,7 +1,13 @@
 import color
 duration=240
 class healt_boost:
-    def __init__(self,x,y):
+    x=0
+    y=0
+    width=15
+    height=15
+    color= color.blue
+    duration=240
+    def __init__( self , x , y ):
         self.x=x
         self.y=y
         self.width=15
@@ -12,3 +18,8 @@ class healt_boost:
         self.duration-=1
     def __del__(self):
         pass
+class dem_boost:
+    def __init__(self,x,y):
+        self.x=x
+        self.y=y
+        self.width=15

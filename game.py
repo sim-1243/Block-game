@@ -1,12 +1,15 @@
-import pygame
+from python import pygame
+#import pygame
 import color
 import backbone
 import bullet
 import booster
 import random
-import sys
+
+
 # Initialisierung von Pygame
 pygame.init()
+pygame.font.init()
 
 # Spielfenster einrichten
 screen_width = 1366
@@ -15,9 +18,9 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
 a=3
-hboost0=booster.healt_boost(800,-35)
-hboost1=booster.healt_boost(800,-35)
-hboost2=booster.healt_boost(800,-35)
+hboost0=booster.healt_boost( 800,-35 )
+hboost1=booster.healt_boost( 800,-35 )
+hboost2=booster.healt_boost( 800,-35 )
 boost=[hboost0,hboost1,hboost2]
 boosters=[False] *a
 kugeln=[False] *a
@@ -47,6 +50,8 @@ player_height = 100
 player_color = color.red
 kugel_c=False
 enemy_c=False
+Font='Ubuntu-Title.ttf'
+my_font=pygame.font.Font(Font,30)
 # Gegner einrichten
 enemy_color = color.green
 kugel_d = False
@@ -55,7 +60,7 @@ target_y = screen_height // 2
 target_width = 100
 target_height = 100
 target_x = screen_width - target_width
-target_color = (150,37,62)
+target_color = color.rosa#(150,37,62)
 kugel0=bullet.Bullet(player_x,player_y,kugel_color,player)
 kugel1=bullet.Bullet(player_x,player_y,kugel_color,player)
 kugel2=bullet.Bullet(player_x,player_y,kugel_color,player)
@@ -71,6 +76,11 @@ field_color = (255, 255, 255)
 # Spielschleife
 running = True
 emerg=True
+def draw_kugel(lbool,lkugel,color):
+    for z in range (len(lkugel)):
+        if lbool[z]:
+            pygame.draw.rect(screen,color,(lkugel[z].x,lkugel[z].y,lkugel[z].width,lkugel[z].height))
+        z+=1
 while running and emerg:
     # Ereignisse verarbeiten
     for event in pygame.event.get():
@@ -97,13 +107,13 @@ while running and emerg:
         target_x -= 5
     elif keys[pygame.K_RIGHT]:
         target_x +=5
-    if keys[pygame.K_e]and i==0:
-        kugeln,i=backbone.bullet_frei(kugeln)
     if keys[pygame.K_RCTRL] and j == 0:
         enemys,j=backbone.bullet_frei(enemys)
     if keys[pygame.K_ESCAPE]:
         emerg=False
         print("palyer1 hat ",score,"punkte", "player2 hat ",score1, "punkte")
+    if keys[pygame.K_e] and i==0:
+        kugeln,i=backbone.bullet_frei(kugeln)
     if random.randint(1,100) == 5:
         for l in range (len(boost)):
             if not boosters[l]:
@@ -117,6 +127,8 @@ while running and emerg:
             boost[l].x=800
             boost[l].y=-35
         l+=1
+    text_surf=my_font.render(str(score),False,(0,0,0))
+    text_surf1=my_font.render(str(score1),False,(0,0,0))
     player_x,player_y=backbone.player_out(player_x,player_y,screen_width,screen_height,player_width,player_height)
     target_x,target_y=backbone.player_out(target_x,target_y,screen_width,screen_height,target_width,target_height)
     # Gegnerbewegung
@@ -156,6 +168,8 @@ while running and emerg:
         if enemys[z]:
             pygame.draw.rect(screen,enemy_color,(enemy[z].x,enemy[z].y,enemy[z].width,enemy[z].height))
         z+=1
+    screen.blit(text_surf, (screen_width//4,10))
+    screen.blit(text_surf1, (screen_width-screen_width//4,10))
     pygame.draw.rect(screen, player_color,(leben_x, leben_y, leben, leben_height))
     pygame.draw.rect(screen, player_color,(leben_tx,leben_y,leben_t,leben_height))
     pygame.draw.rect(screen, player_color, (player_x, player_y, player_width, player_height))
@@ -166,6 +180,5 @@ while running and emerg:
     
     # Bildschirm aktualisieren
     pygame.display.flip()
-
 # Quit Pygame
 pygame.quit()
