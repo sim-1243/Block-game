@@ -58,6 +58,7 @@ class Player():
             self.shoot(richtung(self.x,gegner.x))
 
 
+
 def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
     if px < bx + bwith and px + pwidth > bx and py< by + bheight and py + pheight> by:
         return True
