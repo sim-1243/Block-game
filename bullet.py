@@ -8,10 +8,10 @@ class Bullet:
     speed:int
     direction: bool
     def __init__(self,x,y,color,direction):
-        self.x=x+50
-        self.y=y+50
-        self.width=15
-        self.height=15
+        self.x=x+23
+        self.y=y+23
+        self.width=7
+        self.height=7
         self.color=color
         self.speed=10
         self.schaden=40

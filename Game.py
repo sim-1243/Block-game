@@ -36,11 +36,21 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    
+    #inputs vorbereiten
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         running=False
     
+    pygame.joystick.init()
+    joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+    joystick=pygame.joystick.Joystick(0)
+    #/inputs vorberiten
+    #Debug optionen
+    if joystick.get_button(1) and joystick.get_button(0):
+        debug=True
+        tastatur=False
+    #/Debug optionen 
+    #movementset
     if tastatur:
         #Player Move
         if keys[pygame.K_a]:
@@ -69,27 +79,26 @@ while running:
             target.shoot(backbone.richtung(target.x,player.x))
         #/players fire
     else:
-        pygame.joystick.init()
-        joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-        joystick=pygame.joystick.Joystick(0)
-        if joystick.get_button(11):
-            running=False
-        if  debug and joystick.get_button(9):
-            player_1=True
-            player_2=False
-        elif  debug and joystick.get_button(10):
-            player_1=False
-            player_2=True
-        #Player move
-        if debug and player_1:
-            player.joy_move(0,target)
-        elif debug:
-            p=1
-        else:
-            player.joy_move(0,target)
-        #/player move
-        #target move
         try:
+            #Controller Debug
+            if joystick.get_button(11):
+                running=False
+            if  debug and joystick.get_button(9):
+                player_1=True
+                player_2=False
+            elif  debug and joystick.get_button(10):
+                player_1=False
+                player_2=True
+            #/Controller Debug
+            #Player move
+            if debug and player_1:
+                player.joy_move(0,target)
+            elif debug:
+                p=1
+            else:
+                player.joy_move(0,target)
+            #/player move
+            #target move
             if debug and player_2:
                 target.joy_move(0,player)
             elif debug:
@@ -99,7 +108,7 @@ while running:
             #/target move
         except pygame.error:
             tastatur=True
-
+    #/movementset
     #collisionen
     for j in range (len(player.bullets)):
         player.bullets[j].move()
