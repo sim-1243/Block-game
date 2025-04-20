@@ -5,13 +5,18 @@ import bullet
 import booster
 import random
 
+from input import *
+
 # Initialisierung von Pygame
 pygame.init()
 pygame.font.init()
 
+# Eingabe modus
+input_mode: EInputType = EInputType.Keyboard;
+
 # Spielfenster einrichten
-screen_width = 1920
-screen_height = 1080
+screen_width = 1920 / 2
+screen_height = 1080 / 2
 screen = pygame.display.set_mode((screen_width, screen_height))
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
@@ -20,7 +25,7 @@ mülli=[]
 debug=False
 player=backbone.Player(50,50,color.red)
 target=backbone.Player(1000,50,color.blue)
-tastatur=False
+# tastatur=False
 Font='Ubuntu-Title.ttf'
 my_font=pygame.font.Font(Font,30)
 player_1=True
@@ -39,9 +44,9 @@ while running:
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
-        running=False
+        running = False
     
-    if tastatur:
+    if input_mode == EInputType.Keyboard:
         #Player Move
         if keys[pygame.K_a]:
             player.x -= 5
@@ -62,13 +67,13 @@ while running:
         elif keys[pygame.K_RIGHT]:
             target.x +=5
         #/target move
-        #players fire
-        if keys[pygame.K_e] and len(player.bullets) <=50 and player.cooldown():
+        #players fire len(player.bullets) <=50
+        if keys[pygame.K_e] and len(player.bullets) > 0 and not player.cooldown():
             player.shoot(backbone.richtung(player.x,target.x))
-        if keys[pygame.K_MINUS] and len(target.bullets) <=50 and target.cooldown():
+        if keys[pygame.K_MINUS] and len(player.bullets) > 0 and not target.cooldown():
             target.shoot(backbone.richtung(target.x,player.x))
         #/players fire
-    else:
+    elif input_mode == EInputType.Controller:
         pygame.joystick.init()
         joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
         joystick=pygame.joystick.Joystick(0)
@@ -99,6 +104,9 @@ while running:
             #/target move
         except pygame.error:
             tastatur=True
+    else:
+        print("Invalider Eingabemodus!")
+        exit()
 
     #collisionen
     for j in range (len(player.bullets)):

@@ -1,4 +1,5 @@
 import pygame
+
 class Bullet:
     x: int
     y: int
@@ -7,7 +8,8 @@ class Bullet:
     height:int
     speed:int
     direction: bool
-    def __init__(self,x,y,color,direction):
+    def __init__(self, x, y, color, direction: bool):
+        self.x=x+50
         self.x=x+50
         self.y=y+50
         self.width=15
@@ -22,7 +24,8 @@ class Bullet:
         else:
             self.x -=self.speed
     def draw(self,screen):
-        pygame.draw.rect(screen,self.color,(self.x,self.y,self.width,self.height))
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+
 class Gas:
     x: int
     y: int
