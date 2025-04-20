@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("2D Game")
 boost=[]
 mülli=[]
-debug=True
+debug=False
 player=backbone.Player(50,50,color.red)
 target=backbone.Player(1000,50,color.blue)
 tastatur=False
