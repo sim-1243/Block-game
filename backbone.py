@@ -1,14 +1,63 @@
-def leben_verlust(wert,schaden):
-    if wert !=0 and schaden !=0:
-        wert-=schaden
-        schaden=0
-    elif wert <= 0:
-        return False ,wert ,schaden
-    elif wert!=0 and schaden ==0 and wert<100:
-        wert+=1
-    else:
-        return True, wert ,schaden
-    return True, wert, schaden
+import bullet
+import pygame
+import color
+class Player():
+    def __init__(self,x,y,color):
+        self.leben=100
+        self.width=100
+        self.height=100
+        self.x=x
+        self.y=y
+        self.color=color
+        self.bullets=[]
+        self.score=0
+        self.cooled=True
+        self.timer=30
+    def shoot(self,direction):
+        self.bullets.append(bullet.Bullet(self.x,self.y,(0,0,0),direction))
+        self.cooled=False
+    def get_hit(self,schaden):
+        self.leben-= schaden
+    def heal(self):
+        if self.leben < 100:
+            self.leben+=0.5
+    def out(self,screen_width,screen_height):
+        if self.x+self.width >screen_width:
+            self.x -= 10
+        elif self.x < 0:
+            self.x += 10
+        if self.y < 0:
+            self.y += 10
+        elif self.y+self.height > screen_height:
+            self.y -=10
+    def draw(self,screen):
+        pygame.draw.rect(screen,self.color,(self.x,self.y,self.width,self.height))
+        pygame.draw.rect(screen,color.red,(self.x,self.y-25, self.leben, 15))
+    def cooldown(self):
+        if self.timer==0:
+            self.timer=30
+            self.cooled=True
+        else:
+            self.timer-=1
+    
+    def joy_move(self,joystick_id,gegner):
+        joystick=pygame.joystick.Joystick(joystick_id)
+        joystick_x = joystick.get_axis(0)  # Clamp x-axis value between -1 and 1
+        joystick_y = joystick.get_axis(1) # Clamp y-axis value between -1 and 1
+        self.cooldown()
+        if joystick_y < -0.25 :  # Assuming small threshold instead of fixed values
+            self.y -= 5
+        elif joystick_y > 0.25 :
+            self.y += 5
+
+        if joystick_x < -0.25 :  # Assuming small threshold instead of fixed values
+            self.x -= 5
+        elif joystick_x > 0.25 :
+            self.x += 5
+        if joystick.get_button(8) and len(self.bullets) <=50 and self.cooled:
+            self.shoot(richtung(self.x,gegner.x))
+
+
 def collision (px,bx,py,by,pwidth,pheight,bwith,bheight):
     if px < bx + bwith and px + pwidth > bx and py< by + bheight and py + pheight> by:
         return True
@@ -67,26 +116,8 @@ def player_out(px,py,width,height,player_width,player_height):
     elif py<=0:
         py+=5
     return px,py
-def out_of_screen(px,py,lcoord,lbool,width,height):
-    for i in range(len(lcoord)):
-        if lcoord[i].x>width:
-            lbool[i]=False
-            lcoord[i].x=px
-        elif lcoord[i].x<0:
-            lbool[i]=False
-            lcoord[i].x=px
-        elif lcoord[i].y>height:
-            lbool[i]=False
-            lcoord[i].y=py
-        elif lcoord[i].y<0:
-            lbool[i]=False
-            lcoord[i].y=py
-        i+=1
-    return lcoord, lbool
-def bullet_frei(kugel):
-    for i in range (len(kugel)):
-        if not kugel[i]:
-            kugel[i]=True
-            return kugel, 30
-        i+=1
-    return kugel,0
+def out_of_screen(x,y,screen_width,screen_height):
+    if x >= screen_width or x <= 0 or y >=screen_height or y <=0:
+        return  True
+    return False
+

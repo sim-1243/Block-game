@@ -1,26 +1,22 @@
-from python import pygame # type: ignore
-#import pygame
+#from python import pygame # type: ignore
+import pygame
 import color
 import backbone
 import bullet
 import booster
 import random
-
-
 # Initialisierung von Pygame
 pygame.init()
 pygame.font.init()
 
 # Spielfenster einrichten
-screen_width = 1366
-screen_height = 786
+screen_width = 1920
+screen_height = 1080
 screen = pygame.display.set_mode((screen_width, screen_height))
 # Spieltitel und Icons festlegen
 pygame.display.set_caption("2D Game")
 a=3
-hboost0=booster.healt_boost( 800,-35 )
-hboost1=booster.healt_boost( 800,-35 )
-hboost2=booster.healt_boost( 800,-35 )
+hboost=[booster.healt_boost (800,-35) for _ in range(3)]
 boost=[hboost0,hboost1,hboost2]
 boosters=[False] *a
 kugeln=[False] *a
@@ -76,11 +72,31 @@ field_color = (255, 255, 255)
 # Spielschleife
 running = True
 emerg=True
+startup=False
 def draw_kugel(lbool,lkugel,color):
     for z in range (len(lkugel)):
         if lbool[z]:
             pygame.draw.rect(screen,color,(lkugel[z].x,lkugel[z].y,lkugel[z].width,lkugel[z].height))
         z+=1
+while startup:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            startup=False
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_e]:
+        running=True
+        startup=False
+    screen.fill(color.weiss)
+    pygame.draw.rect(screen, player_color, (player_x, player_y, player_width, player_height))
+    pygame.draw.rect(screen,(255,36,157),(screen_width//2 -200,300,400,50))
+    start_text=my_font.render("Start",False,color.black)
+    screen.blit(start_text,(screen_width//2 -20, 310))
+    clock = pygame.time.Clock()
+    clock.tick(60)
+    pygame.display.flip()
+ 
+
 while running and emerg:
     # Ereignisse verarbeiten
     for event in pygame.event.get():
@@ -107,7 +123,7 @@ while running and emerg:
         target_x -= 5
     elif keys[pygame.K_RIGHT]:
         target_x +=5
-    if keys[pygame.K_RCTRL] and j == 0:
+    if keys[pygame.K_MINUS] and j == 0:
         enemys,j=backbone.bullet_frei(enemys)
     if keys[pygame.K_ESCAPE]:
         emerg=False
