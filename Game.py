@@ -19,7 +19,7 @@ boost=[]
 mülli=[]
 debug=False
 player=backbone.Player(50,50,color.red)
-target=backbone.Player(1000,50,color.blue)
+target=backbone.Player(1000,50,color.rosa)
 tastatur=False
 Font='Ubuntu-Title.ttf'
 my_font=pygame.font.Font(Font,30)
@@ -45,6 +45,11 @@ while running:
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
     joystick=pygame.joystick.Joystick(0)
     #/inputs vorberiten
+    #print(pygame.joystick.Joystick(1).get_name())
+    #print(joystick.get_name())
+    #pygame.joystick.Joystick(1).rumble(0.3,0.6,200)
+    #text_surf=my_font.render(str(),False,(0,0,0))
+
     #Debug optionen
     if joystick.get_button(1) and joystick.get_button(0):
         debug=True
@@ -81,8 +86,6 @@ while running:
     else:
         try:
             #Controller Debug
-            if joystick.get_button(11):
-                running=False
             if  debug and joystick.get_button(9):
                 player_1=True
                 player_2=False
@@ -92,19 +95,19 @@ while running:
             #/Controller Debug
             #Player move
             if debug and player_1:
-                player.joy_move(0,target)
+                running=player.joy_move(0,target)
             elif debug:
                 p=1
             else:
-                player.joy_move(0,target)
+                running=player.joy_move(0,target)
             #/player move
             #target move
             if debug and player_2:
-                target.joy_move(0,player)
+                running=target.joy_move(0,player)
             elif debug:
                 p=0
             else :
-                target.joy_move(1,player)
+                running=target.joy_move(1,player)
             #/target move
         except pygame.error:
             tastatur=True
@@ -115,6 +118,7 @@ while running:
         if backbone.collision(target.x,player.bullets[j].x, target.y, player.bullets[j].y,target.width,target.height,player.bullets[j].width,player.bullets[j].height):
             target.get_hit(player.bullets[j].schaden)
             player.score+=100
+            target.controll.rumble(0.3,0.6,100)
             mülli.append(j)
         if backbone.out_of_screen(player.bullets[j].x,player.bullets[j].y,screen_width,screen_height):
             mülli.append(j)
@@ -131,6 +135,7 @@ while running:
         if backbone.collision(player.x,target.bullets[i].x,player.y,target.bullets[i].y,player.width,player.height,target.bullets[i].width,target.bullets[i].height):
             player.get_hit(target.bullets[i].schaden)
             target.score+=100
+            player.controll.rumble(0.3,0.6,100)
             mülli.append(i)
         if backbone.out_of_screen(target.bullets[i].x,target.bullets[i].y,screen_width,screen_height):
             mülli.append(i)
@@ -147,6 +152,7 @@ while running:
     for l in range (len(target.bullets)):
         target.bullets[l].draw(screen)
     target.draw(screen)
+    #screen.blit(text_surf, (screen_width//4,10))
     #/zeichnen
     #check ob tot und heilen
     player.heal()

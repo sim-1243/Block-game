@@ -2,6 +2,7 @@ import bullet
 import pygame
 import color
 import random
+import controllers
 class Player():
     def __init__(self,x,y,color):
         self.leben=150
@@ -15,6 +16,7 @@ class Player():
         self.maxleben=150
         self.cooled=True
         self.timer=30
+        self.controll=0
     def shoot(self,direction):
         self.bullets.append(bullet.Bullet(self.x,self.y,(0,0,0),direction))
         self.cooled=False
@@ -44,8 +46,14 @@ class Player():
     
     def joy_move(self,joystick_id,gegner):
         joystick=pygame.joystick.Joystick(joystick_id)
-        joystick_x = joystick.get_axis(0)  # Clamp x-axis value between -1 and 1
-        joystick_y = joystick.get_axis(1) # Clamp y-axis value between -1 and 1
+        self.controll=joystick
+        if joystick.get_name() == "Nintendo Co., Ltd. Pro Controller":
+            controller=controllers.Pro_controller(joystick_id)
+        elif str.strip(joystick.get_name()) == "Lic Pro Controller":
+            controller=controllers.PdP_switch_controller(joystick_id)
+        controller.get_state()
+        joystick_x = controller.x_axe  # Clamp x-axis value between -1 and 1
+        joystick_y = controller.y_axe # Clamp y-axis value between -1 and 1
         self.cooldown()
         if joystick_y < -0.25 :  # Assuming small threshold instead of fixed values
             self.y -= 5
@@ -58,18 +66,22 @@ class Player():
                 self.y -=5
                 gegner.y +=5
 
-        if joystick_x < -0.25 :  # Assuming small threshold instead of fixed values
-            self.x -= 5
-            if self.collision_player(gegner):
-                self.x +=5
-                gegner.x -=5
-        elif joystick_x > 0.25 :
-            self.x += 5
-            if self.collision_player(gegner):
-                self.x -=5
-                gegner.x +=5
-        if joystick.get_button(8) and len(self.bullets) <=50 and self.cooled:
-            self.shoot(richtung(self.x,gegner.x))
+        if controller.home:
+            return False
+        else:
+            if joystick_x < -0.25 :  # Assuming small threshold instead of fixed values
+                self.x -= 5
+                if self.collision_player(gegner):
+                    self.x +=5
+                    gegner.x -=5
+            elif joystick_x > 0.25 :
+                self.x += 5
+                if self.collision_player(gegner):
+                    self.x -=5
+                    gegner.x +=5
+            if controller.Zr and len(self.bullets) <=50 and self.cooled:
+                self.shoot(richtung(self.x,gegner.x))
+        return True
     def collision_player(self,Player_2):
         if self.x < Player_2.x + Player_2.width and self.x +self.width > Player_2.x and self.y < Player_2.y + Player_2.height and self.y +self.height > Player_2.y:
             return True
